@@ -47,7 +47,9 @@ private slots:
     void on_pb_trie_clicked();
 
     void on_pb_rech_ep_clicked();
+
     void afficherArchives();
+    void afficherNombreOffresParEntreprise();
 
 
     void on_pb_pdf_clicked();
@@ -65,6 +67,16 @@ private slots:
     void on_rech_off_clicked();
 
     void on_tabWidget_4_tabBarClicked(int index);
+
+
+    void on_pb_of_pdf_clicked();
+
+
+
+    void on_pb_arof_clicked();
+    void afficherArchivesOffre();
+
+
 
 private:
     Ui::MainWindow *ui;

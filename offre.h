@@ -5,7 +5,11 @@
 #include<QSqlQueryModel>
 #include <QPieSeries>
 
+#include <QList>
+#include <QVariantMap>
+#include <QStandardItemModel>
 
+#include <QMessageBox>
 
 class Offre
 {
@@ -46,7 +50,13 @@ public:
  QSqlQueryModel* rechercher(const QString& )    ;
 
  QPieSeries* stat_offre();
+ bool genererPDFOffres(const QString &cheminFichier);
 
+ bool archiverOffresExpirees();
+ QSqlQueryModel* afficherArchivesOffre() const;
+ bool archiverOffres(const QDate& dateActuelle);
+
+ QPieSeries* getNombreOffresParEntreprise() const;
 
 
 
@@ -61,6 +71,7 @@ private :
     QDate date_publication;
     QDate date_limite;
     int entreprise_id;
+
 };
 
 #endif // OFFRE_H

@@ -11,6 +11,7 @@
 #include <QSqlQuery>
 #include <QFileDialog>
 
+#include <QDate>
 
 
 
@@ -31,8 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->label_pic->setPixmap(scaledPix);
      // ---------
     afficherArchives();
-
-
+    afficherArchivesOffre();
 }
 
 
@@ -81,6 +81,7 @@ void MainWindow::on_pb_supprimer_clicked()
     msgBox.exec();
 
 }
+// -- AFFICHER ARCHIVE ENTREPRISE --------
 void MainWindow::afficherArchives() {
     Entreprise ep;
     QSqlQueryModel* archiveModel = ep.afficherArchives();
@@ -404,12 +405,94 @@ void MainWindow::afficherPieChartOffre() {
     ui->stat_offre->setScene(scene);
 }
 
-void MainWindow::on_tabWidget_4_tabBarClicked(int index)
-{
-    if (index == 4)
-    {
-        afficherPieChartOffre();
 
+void MainWindow::on_tabWidget_4_tabBarClicked(int index) {
+    switch (index) {
+        case 4:
+            afficherPieChartOffre();
+            break;
+        case 6:
+            afficherNombreOffresParEntreprise(); // Fonction pour afficher par entreprise
+            break;
+        default:
+            // Gestion des autres index si nécessaire
+            break;
     }
+}
+
+
+// -------- PDF OFFRE --------------------
+void MainWindow::on_pb_of_pdf_clicked()
+{
+    // Ouvrir une boîte de dialogue pour choisir l'emplacement du fichier PDF
+    QString fichier = QFileDialog::getSaveFileName(this, "Enregistrer le PDF", "", "PDF Files (*.pdf)");
+    if (fichier.isEmpty()) {
+        return; // L'utilisateur a annulé la boîte de dialogue
+    }
+
+    Offre offre;
+    if (offre.genererPDFOffres(fichier)) {
+        QMessageBox::information(this, "Succès", "Le PDF a été généré avec succès.");
+    } else {
+        QMessageBox::warning(this, "Erreur", "Impossible de générer le PDF.");
+    }
+}
+
+// --------- Archive OFFRE -----------------
+
+
+void MainWindow::on_pb_arof_clicked()
+{
+    if (o.archiverOffresExpirees()) {
+        QMessageBox::information(this, "Succès", "Les offres expirées ont été archivées avec succès.");
+        ui->tab_of->setModel(o.afficher());
+        ui->tab_arof->setModel(o.afficherArchivesOffre());
+
+    } else {
+        QMessageBox::warning(this, "Erreur", "Impossible d'archiver les offres expirées.");
+    }
+}
+// -- AFFICHER ARCHIVE OFFRE --------
+void MainWindow::afficherArchivesOffre() {
+    Entreprise ep;
+    QSqlQueryModel* archiveModel = o.afficherArchivesOffre();
+    if (archiveModel) {
+        ui->tab_arof->setModel(archiveModel);
+    } else {
+        qDebug() << "Failed to load archive data.";
+    }
+}
+
+// AFFICHER ACTIVITES -----------------
+void MainWindow::afficherNombreOffresParEntreprise() {
+    Offre offre;
+    QPieSeries *series = offre.getNombreOffresParEntreprise();
+
+    if (!series) {
+        QMessageBox::warning(this, "Erreur", "Impossible de récupérer les statistiques.");
+        return;
+    }
+    // Créez un graphique et ajoutez la série
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->setTitle("Nombre d'offres par entreprise");
+    chart->legend()->show();
+
+    // Créez un QChartView pour afficher le graphique
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+    chartView->resize(ui->graph_of->size());
+
+
+    // Créez une scène graphique et ajoutez le chartView
+    QGraphicsScene *scene = new QGraphicsScene(this);
+    scene->addWidget(chartView);
+
+    // Définir la scène graphique pour le QGraphicsView
+    ui->graph_of->setScene(scene);
+
+    // Ajustez la taille du QChartView pour qu'il remplisse l'espace du QGraphicsView
+    chartView->resize(ui->stat_offre->size());
+    ui->graph_of->fitInView(chartView->sceneRect(), Qt::KeepAspectRatioByExpanding);
 }
 

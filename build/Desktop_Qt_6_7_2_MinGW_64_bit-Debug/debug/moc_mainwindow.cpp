@@ -49,6 +49,7 @@ constexpr auto qt_meta_stringdata_CLASSMainWindowENDCLASS = QtMocHelpers::string
     "on_pb_trie_clicked",
     "on_pb_rech_ep_clicked",
     "afficherArchives",
+    "afficherNombreOffresParEntreprise",
     "on_pb_pdf_clicked",
     "on_pb_email_clicked",
     "on_pb_of_clicked",
@@ -56,7 +57,10 @@ constexpr auto qt_meta_stringdata_CLASSMainWindowENDCLASS = QtMocHelpers::string
     "on_pb_of_md_clicked",
     "on_Tri_of_clicked",
     "on_rech_off_clicked",
-    "on_tabWidget_4_tabBarClicked"
+    "on_tabWidget_4_tabBarClicked",
+    "on_pb_of_pdf_clicked",
+    "on_pb_arof_clicked",
+    "afficherArchivesOffre"
 );
 #else  // !QT_MOC_HAS_STRINGDATA
 #error "qtmochelpers.h not found or too old."
@@ -69,7 +73,7 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSMainWindowENDCLASS[] = {
       12,       // revision
        0,       // classname
        0,    0, // classinfo
-      19,   14, // methods
+      23,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -77,25 +81,29 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSMainWindowENDCLASS[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,  128,    2, 0x08,    1 /* Private */,
-       3,    0,  129,    2, 0x08,    2 /* Private */,
-       4,    0,  130,    2, 0x08,    3 /* Private */,
-       5,    0,  131,    2, 0x08,    4 /* Private */,
-       6,    0,  132,    2, 0x08,    5 /* Private */,
-       7,    1,  133,    2, 0x08,    6 /* Private */,
-       9,    0,  136,    2, 0x08,    8 /* Private */,
-      10,    0,  137,    2, 0x08,    9 /* Private */,
-      11,    0,  138,    2, 0x08,   10 /* Private */,
-      12,    0,  139,    2, 0x08,   11 /* Private */,
-      13,    0,  140,    2, 0x08,   12 /* Private */,
-      14,    0,  141,    2, 0x08,   13 /* Private */,
-      15,    0,  142,    2, 0x08,   14 /* Private */,
-      16,    0,  143,    2, 0x08,   15 /* Private */,
-      17,    0,  144,    2, 0x08,   16 /* Private */,
-      18,    0,  145,    2, 0x08,   17 /* Private */,
-      19,    0,  146,    2, 0x08,   18 /* Private */,
-      20,    0,  147,    2, 0x08,   19 /* Private */,
-      21,    1,  148,    2, 0x08,   20 /* Private */,
+       1,    0,  152,    2, 0x08,    1 /* Private */,
+       3,    0,  153,    2, 0x08,    2 /* Private */,
+       4,    0,  154,    2, 0x08,    3 /* Private */,
+       5,    0,  155,    2, 0x08,    4 /* Private */,
+       6,    0,  156,    2, 0x08,    5 /* Private */,
+       7,    1,  157,    2, 0x08,    6 /* Private */,
+       9,    0,  160,    2, 0x08,    8 /* Private */,
+      10,    0,  161,    2, 0x08,    9 /* Private */,
+      11,    0,  162,    2, 0x08,   10 /* Private */,
+      12,    0,  163,    2, 0x08,   11 /* Private */,
+      13,    0,  164,    2, 0x08,   12 /* Private */,
+      14,    0,  165,    2, 0x08,   13 /* Private */,
+      15,    0,  166,    2, 0x08,   14 /* Private */,
+      16,    0,  167,    2, 0x08,   15 /* Private */,
+      17,    0,  168,    2, 0x08,   16 /* Private */,
+      18,    0,  169,    2, 0x08,   17 /* Private */,
+      19,    0,  170,    2, 0x08,   18 /* Private */,
+      20,    0,  171,    2, 0x08,   19 /* Private */,
+      21,    0,  172,    2, 0x08,   20 /* Private */,
+      22,    1,  173,    2, 0x08,   21 /* Private */,
+      23,    0,  176,    2, 0x08,   23 /* Private */,
+      24,    0,  177,    2, 0x08,   24 /* Private */,
+      25,    0,  178,    2, 0x08,   25 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
@@ -116,7 +124,11 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSMainWindowENDCLASS[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void,
     QMetaType::Void, QMetaType::Int,    8,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
 
        0        // eod
 };
@@ -153,6 +165,8 @@ Q_CONSTINIT const QMetaObject MainWindow::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'afficherArchives'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'afficherNombreOffresParEntreprise'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'on_pb_pdf_clicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'on_pb_email_clicked'
@@ -169,7 +183,13 @@ Q_CONSTINIT const QMetaObject MainWindow::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'on_tabWidget_4_tabBarClicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        QtPrivate::TypeAndForceComplete<int, std::false_type>
+        QtPrivate::TypeAndForceComplete<int, std::false_type>,
+        // method 'on_pb_of_pdf_clicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'on_pb_arof_clicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'afficherArchivesOffre'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
     nullptr
 } };
@@ -191,14 +211,18 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 8: _t->on_pb_trie_clicked(); break;
         case 9: _t->on_pb_rech_ep_clicked(); break;
         case 10: _t->afficherArchives(); break;
-        case 11: _t->on_pb_pdf_clicked(); break;
-        case 12: _t->on_pb_email_clicked(); break;
-        case 13: _t->on_pb_of_clicked(); break;
-        case 14: _t->on_pb_sup_of_clicked(); break;
-        case 15: _t->on_pb_of_md_clicked(); break;
-        case 16: _t->on_Tri_of_clicked(); break;
-        case 17: _t->on_rech_off_clicked(); break;
-        case 18: _t->on_tabWidget_4_tabBarClicked((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
+        case 11: _t->afficherNombreOffresParEntreprise(); break;
+        case 12: _t->on_pb_pdf_clicked(); break;
+        case 13: _t->on_pb_email_clicked(); break;
+        case 14: _t->on_pb_of_clicked(); break;
+        case 15: _t->on_pb_sup_of_clicked(); break;
+        case 16: _t->on_pb_of_md_clicked(); break;
+        case 17: _t->on_Tri_of_clicked(); break;
+        case 18: _t->on_rech_off_clicked(); break;
+        case 19: _t->on_tabWidget_4_tabBarClicked((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
+        case 20: _t->on_pb_of_pdf_clicked(); break;
+        case 21: _t->on_pb_arof_clicked(); break;
+        case 22: _t->afficherArchivesOffre(); break;
         default: ;
         }
     }
@@ -223,13 +247,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 19)
+        if (_id < 23)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 19;
+        _id -= 23;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 19)
+        if (_id < 23)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 19;
+        _id -= 23;
     }
     return _id;
 }

@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab_4">
      <attribute name="title">
@@ -40,7 +40,7 @@
        </rect>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -222,7 +222,7 @@
        <enum>Qt::FocusPolicy::TabFocus</enum>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_7">
        <attribute name="title">
@@ -863,7 +863,7 @@
        <cursorShape>ArrowCursor</cursorShape>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>6</number>
       </property>
       <widget class="QWidget" name="tab_12">
        <attribute name="title">
@@ -1323,6 +1323,32 @@
          </rect>
         </property>
        </widget>
+       <widget class="QPushButton" name="pb_of_pdf">
+        <property name="geometry">
+         <rect>
+          <x>650</x>
+          <y>320</y>
+          <width>91</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>PDF</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pb_arof">
+        <property name="geometry">
+         <rect>
+          <x>60</x>
+          <y>320</y>
+          <width>101</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Archiver</string>
+        </property>
+       </widget>
       </widget>
       <widget class="QWidget" name="tab_15">
        <attribute name="title">
@@ -1386,6 +1412,36 @@
         </property>
        </widget>
       </widget>
+      <widget class="QWidget" name="tab_19">
+       <attribute name="title">
+        <string>Archive</string>
+       </attribute>
+       <widget class="QTableView" name="tab_arof">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>1011</width>
+          <height>431</height>
+         </rect>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab_20">
+       <attribute name="title">
+        <string>Activités</string>
+       </attribute>
+       <widget class="QGraphicsView" name="graph_of">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>1011</width>
+          <height>421</height>
+         </rect>
+        </property>
+       </widget>
+      </widget>
      </widget>
      <widget class="QLabel" name="label_pic">
       <property name="geometry">
@@ -1402,16 +1458,6 @@
      </widget>
     </widget>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1181</width>
-     <height>25</height>
-    </rect>
-   </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

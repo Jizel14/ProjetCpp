@@ -6,6 +6,13 @@
 #include<QSqlQueryModel>
 #include<QObject>
 #include <QDate>
+#include <QPrinter>
+#include <QTextDocument>
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QStandardItemModel>
+
+#include <QDebug>
 
 
 Offre::Offre() {
@@ -86,7 +93,15 @@ bool Offre::ajouter() {
         qDebug() << "Erreur lors de l'insertion de l'offre:" << query.lastError().text();
         return false;
     }
+    // --------- enregister activités
+    QString activite = "Ajout de l'offre ID: " + QString::number(offre_id) + " le " + QDateTime::currentDateTime().toString();
+
+    query.prepare("UPDATE offre_emploi SET historique_activites = COALESCE(historique_activites, '') || :activite WHERE offre_id = :id");
+    query.bindValue(":activite", "\n" + activite);
+    query.bindValue(":id", offre_id);
+    query.exec();
 }
+
 
 //---------------- AFFICHER  -------------
 
@@ -114,6 +129,15 @@ QSqlQueryModel* Offre::afficher()
 bool Offre::supprimer(int offre_id)
 {
     QSqlQuery query;
+
+    // Ajouter l'activité au champ historique_activites
+    QString activite = "Suppression de l'offre ID: " + QString::number(offre_id) + " le " + QDateTime::currentDateTime().toString();
+
+    query.prepare("UPDATE offre_emploi SET historique_activites = COALESCE(historique_activites, '') || :activite WHERE offre_id = :id");
+    query.bindValue(":activite", "\n" + activite);
+    query.bindValue(":id", offre_id);
+    query.exec();
+    // --------------------
 
     query.prepare("Delete from offre_emploi where offre_id=:offre_id");
     query.bindValue(":offre_id", offre_id);
@@ -159,6 +183,16 @@ bool Offre::modifier(int offre_id) {
         qDebug() << "Erreur lors de la mise à jour de l'offre:" << query.lastError().text();
         return false;
     }
+
+
+    // Ajouter l'activité au champ historique_activites
+    QString activite = "Modification de l'offre ID: " + QString::number(offre_id) + " le " + QDateTime::currentDateTime().toString();
+
+    query.prepare("UPDATE offre_emploi SET historique_activites = COALESCE(historique_activites, '') || :activite WHERE offre_id = :id");
+    query.bindValue(":activite", "\n" + activite);
+    query.bindValue(":id", offre_id);
+    query.exec();
+
 }
 // -----------------------------------------------------------------------------------
 // ----------------- Tri -----------
@@ -182,7 +216,7 @@ QSqlQueryModel* Offre::trier(const QString& critere, bool ascendant) {
     return model;
 }
 
-// ----------- rechercher
+// ----------- rechercher -------------------
 QSqlQueryModel* Offre::rechercher(const QString& valeur) {
     QSqlQuery query;
     QString queryString;
@@ -257,5 +291,124 @@ QPieSeries* Offre::stat_offre() {
 
     return series;
 }
+// ----------------- PDF ----------------------------
+bool Offre::genererPDFOffres(const QString &cheminFichier) {
+    QSqlQuery query;
+    query.prepare("SELECT * FROM offre_emploi");
 
+    if (!query.exec()) {
+        qDebug() << "Erreur lors de l'exécution de la requête:" << query.lastError().text();
+        QMessageBox::warning(nullptr, "Erreur", "Impossible d'exécuter la requête SQL : " + query.lastError().text());
+        return false;
+    }
 
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setOutputFileName(cheminFichier);
+    printer.setPageMargins(QMarginsF(15, 15, 15, 15));
+
+    QTextDocument doc;
+    QString html = "<h1 align='center'>Offres d'Emploi</h1>";
+    html += "<table border='1' cellspacing='0' cellpadding='4'>";
+    html += "<thead><tr>";
+    html += "<th>ID Offre</th><th>Titre</th><th>Description</th><th>Date de Publication</th><th>Date Limite</th><th>ID Entreprise</th>";
+    html += "</tr></thead><tbody>";
+
+    while (query.next()) {
+        html += "<tr>";
+        html += "<td>" + query.value("offre_id").toString() + "</td>";
+        html += "<td>" + query.value("titre").toString() + "</td>";
+        html += "<td>" + query.value("description").toString() + "</td>";
+        html += "<td>" + query.value("date_publication").toDate().toString("dd/MM/yyyy") + "</td>";
+        html += "<td>" + query.value("date_limite").toDate().toString("dd/MM/yyyy") + "</td>";
+        html += "<td>" + query.value("entreprise_id").toString() + "</td>";
+        html += "</tr>";
+    }
+
+    html += "</tbody></table>";
+
+    doc.setHtml(html);
+    doc.print(&printer);
+
+    return true;
+}
+// --------------- Archivage --------------
+bool Offre::archiverOffresExpirees() {
+    QDate dateActuelle = QDate::currentDate();
+    return archiverOffres(dateActuelle);
+}
+
+bool Offre::archiverOffres(const QDate& dateActuelle) {
+    QSqlQuery query;
+
+    // Convertir la date actuelle au format de la base de données
+    QString dateFormat = dateActuelle.toString("dd/MM/yy");
+
+    // Archiver les offres expirées
+    query.prepare("INSERT INTO offre_emploi_archive (offre_id, titre, description, date_publication, date_limite, entreprise_id) "
+                  "SELECT offre_id, titre, description, date_publication, date_limite, entreprise_id "
+                  "FROM offre_emploi "
+                  "WHERE TO_DATE(date_limite, 'dd/MM/yy') < TO_DATE(:dateActuelle, 'dd/MM/yy')");
+    query.bindValue(":dateActuelle", dateFormat);
+    if (!query.exec()) {
+        qDebug() << "Erreur lors de l'archivage des offres expirées:" << query.lastError().text();
+        return false;
+    }
+
+    // Supprimer les offres expirées de la table principale
+    query.prepare("DELETE FROM offre_emploi "
+                  "WHERE TO_DATE(date_limite, 'dd/MM/yy') < TO_DATE(:dateActuelle, 'dd/MM/yy')");
+    query.bindValue(":dateActuelle", dateFormat);
+    if (!query.exec()) {
+        qDebug() << "Erreur lors de la suppression des offres expirées:" << query.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
+// -- affiche archive
+QSqlQueryModel* Offre::afficherArchivesOffre() const {
+    QSqlQuery query;
+    query.prepare("SELECT * FROM offre_emploi_archive");
+
+    if (!query.exec()) {
+        qDebug() << "Error fetching archives:" << query.lastError().text();
+        return nullptr; // Renvoie nullptr en cas d'erreur
+    }
+
+    QSqlQueryModel *model = new QSqlQueryModel();
+    model->setQuery(std::move(query)); // Utilisation directe de query
+    return model;
+}
+
+// ------ AFFICHER graph_2 ---
+QPieSeries* Offre::getNombreOffresParEntreprise() const {
+    QPieSeries *series = new QPieSeries();
+
+    // Requête pour compter le nombre d'offres par entreprise
+    QSqlQuery query;
+    query.prepare("SELECT e.nom_entreprise, COUNT(o.offre_id) "
+                  "FROM offre_emploi o "
+                  "JOIN entreprise e ON o.entreprise_id = e.entreprise_id "
+                  "GROUP BY e.nom_entreprise");
+
+    if (!query.exec()) {
+        qDebug() << "Error executing query:" << query.lastError().text();
+        return nullptr;
+    }
+
+    // Ajouter les données à la série
+    while (query.next()) {
+        QString entreprise = query.value(0).toString();
+        int count = query.value(1).toInt();
+        series->append(entreprise, count);
+    }
+
+    // Configurer les labels des tranches
+    for (auto slice : series->slices()) {
+        slice->setLabel(QString("%1: %2 offres").arg(slice->label()).arg(slice->value()));
+    }
+
+    return series;
+}

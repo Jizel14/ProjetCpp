@@ -20,7 +20,6 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
@@ -145,14 +144,19 @@ public:
     QPushButton *Tri_of;
     QPushButton *rech_off;
     QLineEdit *rech_of;
+    QPushButton *pb_of_pdf;
+    QPushButton *pb_arof;
     QWidget *tab_15;
     QLabel *label_16;
     QLineEdit *id_of_sup;
     QPushButton *pb_sup_of;
     QWidget *tab_16;
     QGraphicsView *stat_offre;
+    QWidget *tab_19;
+    QTableView *tab_arof;
+    QWidget *tab_20;
+    QGraphicsView *graph_of;
     QLabel *label_pic;
-    QMenuBar *menubar;
     QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -539,6 +543,12 @@ public:
         rech_of = new QLineEdit(tab_14);
         rech_of->setObjectName("rech_of");
         rech_of->setGeometry(QRect(60, 240, 113, 28));
+        pb_of_pdf = new QPushButton(tab_14);
+        pb_of_pdf->setObjectName("pb_of_pdf");
+        pb_of_pdf->setGeometry(QRect(650, 320, 91, 51));
+        pb_arof = new QPushButton(tab_14);
+        pb_arof->setObjectName("pb_arof");
+        pb_arof->setGeometry(QRect(60, 320, 101, 51));
         tabWidget_4->addTab(tab_14, QString());
         tab_15 = new QWidget();
         tab_15->setObjectName("tab_15");
@@ -559,25 +569,33 @@ public:
         stat_offre->setObjectName("stat_offre");
         stat_offre->setGeometry(QRect(0, 0, 1001, 421));
         tabWidget_4->addTab(tab_16, QString());
+        tab_19 = new QWidget();
+        tab_19->setObjectName("tab_19");
+        tab_arof = new QTableView(tab_19);
+        tab_arof->setObjectName("tab_arof");
+        tab_arof->setGeometry(QRect(0, 0, 1011, 431));
+        tabWidget_4->addTab(tab_19, QString());
+        tab_20 = new QWidget();
+        tab_20->setObjectName("tab_20");
+        graph_of = new QGraphicsView(tab_20);
+        graph_of->setObjectName("graph_of");
+        graph_of->setGeometry(QRect(0, 0, 1011, 421));
+        tabWidget_4->addTab(tab_20, QString());
         label_pic = new QLabel(tab_6);
         label_pic->setObjectName("label_pic");
         label_pic->setGeometry(QRect(1000, 0, 81, 61));
         tabWidget_2->addTab(tab_6, QString());
         MainWindow->setCentralWidget(centralwidget);
-        menubar = new QMenuBar(MainWindow);
-        menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 1181, 25));
-        MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName("statusbar");
         MainWindow->setStatusBar(statusbar);
 
         retranslateUi(MainWindow);
 
-        tabWidget_2->setCurrentIndex(2);
-        tabWidget->setCurrentIndex(1);
-        tabWidget_3->setCurrentIndex(4);
-        tabWidget_4->setCurrentIndex(4);
+        tabWidget_2->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(0);
+        tabWidget_3->setCurrentIndex(0);
+        tabWidget_4->setCurrentIndex(6);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -659,11 +677,15 @@ public:
 
         Tri_of->setText(QCoreApplication::translate("MainWindow", "Tri", nullptr));
         rech_off->setText(QCoreApplication::translate("MainWindow", "Recherche", nullptr));
+        pb_of_pdf->setText(QCoreApplication::translate("MainWindow", "PDF", nullptr));
+        pb_arof->setText(QCoreApplication::translate("MainWindow", "Archiver", nullptr));
         tabWidget_4->setTabText(tabWidget_4->indexOf(tab_14), QCoreApplication::translate("MainWindow", "Afficher", nullptr));
         label_16->setText(QCoreApplication::translate("MainWindow", "Taper le ID", nullptr));
         pb_sup_of->setText(QCoreApplication::translate("MainWindow", "Supprimer", nullptr));
         tabWidget_4->setTabText(tabWidget_4->indexOf(tab_15), QCoreApplication::translate("MainWindow", "Supprimer", nullptr));
         tabWidget_4->setTabText(tabWidget_4->indexOf(tab_16), QCoreApplication::translate("MainWindow", "Statistique", nullptr));
+        tabWidget_4->setTabText(tabWidget_4->indexOf(tab_19), QCoreApplication::translate("MainWindow", "Archive", nullptr));
+        tabWidget_4->setTabText(tabWidget_4->indexOf(tab_20), QCoreApplication::translate("MainWindow", "Activit\303\251s", nullptr));
         label_pic->setText(QString());
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab_6), QCoreApplication::translate("MainWindow", "Gestion d'offre", nullptr));
     } // retranslateUi
