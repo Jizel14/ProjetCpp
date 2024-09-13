@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "etudiant.h"
 #include"entreprise.h"
 #include"offre.h"
 #include <QGraphicsView>
@@ -80,7 +79,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    Etudiant E;
     Entreprise ep;
     Entreprise entreprise;
     Offre o;

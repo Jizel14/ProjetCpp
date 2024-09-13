@@ -65,6 +65,9 @@ bool Entreprise::ajouter(){
 
     // return test;
 }
+
+
+
 QSqlQueryModel* Entreprise::afficher()
 {
     QSqlQueryModel* model=new QSqlQueryModel();

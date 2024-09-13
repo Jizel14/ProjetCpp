@@ -36,6 +36,9 @@ public:
 
     bool modifierEntreprise(int, int, const QString &, const QString &, const QString &, const QString &, const QString &);
 
+
+
+
     //---------------------------
     QPieSeries* obtenirStatistiquesParSecteur();
     QSqlQueryModel* trier(const QString& critere, bool ascendant = true);

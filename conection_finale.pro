@@ -11,7 +11,6 @@ CONFIG += c++17
 SOURCES += \
     connection.cpp \
     entreprise.cpp \
-    etudiant.cpp \
     main.cpp \
     mainwindow.cpp \
     offre.cpp
@@ -19,7 +18,6 @@ SOURCES += \
 HEADERS += \
     connection.h \
     entreprise.h \
-    etudiant.h \
     mainwindow.h \
     offre.h
 

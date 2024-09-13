@@ -200,7 +200,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         auto *_t = static_cast<MainWindow *>(_o);
         (void)_t;
         switch (_id) {
-        case 0: _t->on_pb_ajout_clicked(); break;
+        //case 0: _t->on_pb_ajout_clicked(); break;
         case 1: _t->on_pb_supprimer_clicked(); break;
         case 2: _t->on_pb_ep_clicked(); break;
         case 3: _t->on_pb_sup_ep_clicked(); break;

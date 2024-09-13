@@ -398,6 +398,8 @@ QPieSeries* Offre::getNombreOffresParEntreprise() const {
         return nullptr;
     }
 
+
+
     // Ajouter les données à la série
     while (query.next()) {
         QString entreprise = query.value(0).toString();

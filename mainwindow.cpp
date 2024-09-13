@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include"etudiant.h"
 #include"entreprise.h"
 #include"offre.h"
 #include<QMessageBox>
@@ -10,6 +9,7 @@
 #include <QGraphicsScene>
 #include <QSqlQuery>
 #include <QFileDialog>
+#include <QRegularExpression>
 
 #include <QDate>
 
@@ -21,9 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     // controle de saisir de l'id
-    ui->le_id->setValidator( new QIntValidator(0, 99999, this));
     // pour refraiche le tableau
-    ui->tab_etudiant->setModel(E.afficher());
     ui->tab_entreprise->setModel(ep.afficher());
     ui->tab_of->setModel(o.afficher());
     // inserer image
@@ -41,25 +39,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-// ajouter etudiant
-void MainWindow::on_pb_ajout_clicked()
-{
-    // recuperer les donnees de l'etudiant
-    int id=ui->le_id->text().toInt();
-    QString nom=ui->le_nom->text();
-    QString prenom=ui->le_prenom->text();
-    Etudiant E(id,nom,prenom);
-    qDebug() << "Attempting to add student...";
-
-    if (E.ajouter()) {
-        QMessageBox::information(this, "Succès", "L'étudiant a été ajouté avec succès.");
-        // refraiche le tableau pour affiche du nouveau
-        ui->tab_etudiant->setModel(E.afficher());
-
-    } else {
-        QMessageBox::critical(this, "Erreur", "Échec de l'ajout de l'étudiant.");
-    }
-}
 
 // Supprimer entreprise
 void MainWindow::on_pb_supprimer_clicked()
@@ -95,26 +74,58 @@ void MainWindow::afficherArchives() {
 // ajouter entreprise
 void MainWindow::on_pb_ep_clicked()
 {
-    int id=ui->id_ep->text().toInt();
-    QString nom=ui->n_ep->text();
-    QString adresse=ui->ad_ep->text();
-    QString tel=ui->tel_ep->text();
-    QString email=ui->email_ep->text();
-    QString secteur=ui->sec_ep->text();
+    int id = ui->id_ep->text().toInt();
+    QString nom = ui->n_ep->text();
+    QString adresse = ui->ad_ep->text();
+    QString tel = ui->tel_ep->text();
+    QString email = ui->email_ep->text();
+    QString secteur = ui->sec_ep->text();
 
+    // Vérification de l'ID
+    if (id <= 0) {
+        QMessageBox::warning(this, "Erreur de saisie", "Veuillez entrer un ID valide (entier positif).");
+        return;
+    }
 
-    Entreprise E(id,nom,adresse,tel,email,secteur);
+    // Vérification du nom
+    if (nom.isEmpty()) {
+        QMessageBox::warning(this, "Erreur de saisie", "Le nom de l'entreprise est obligatoire.");
+        return;
+    }
+
+    // Vérification de l'adresse
+    if (adresse.isEmpty()) {
+        QMessageBox::warning(this, "Erreur de saisie", "L'adresse de l'entreprise est obligatoire.");
+        return;
+    }
+
+    // Vérification du numéro de téléphone
+    if (tel.isEmpty() || !tel.contains(QRegularExpression("^[0-9]+$"))) {
+        QMessageBox::warning(this, "Erreur de saisie", "Veuillez entrer un numéro de téléphone valide (seulement des chiffres).");
+        return;
+    }
+
+    // Validation basique de l'email
+    QRegularExpression emailRegex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+    if (email.isEmpty() || !emailRegex.match(email).hasMatch()) {
+        QMessageBox::warning(this, "Erreur de saisie", "Veuillez entrer une adresse email valide.");
+        return;
+    }
+
+    if (secteur.isEmpty()) {
+        QMessageBox::warning(this, "Erreur de saisie", "Le secteur de l'entreprise est obligatoire.");
+        return;
+    }
+
+    // Si toutes les vérifications passent, on peut ajouter l'entreprise
+    Entreprise E(id, nom, adresse, tel, email, secteur);
     if (E.ajouter()) {
-        QMessageBox::information(this, "Succès", "L'Entreprise a été ajouté avec succès.");
-        // refraiche le tableau pour affiche du nouveau
+        QMessageBox::information(this, "Succès", "L'Entreprise a été ajoutée avec succès.");
         ui->tab_entreprise->setModel(ep.afficher());
-
     } else {
         QMessageBox::critical(this, "Erreur", "Échec de l'ajout de l'Entreprise.");
     }
 }
-
-
 
 
 void MainWindow::on_pb_sup_ep_clicked()
@@ -135,6 +146,7 @@ void MainWindow::on_pb_sup_ep_clicked()
     msgBox.exec();
 }
 
+// Modifier entreprise
 void MainWindow::on_modifier_ep_clicked()
 {
     int id = ui->id_ep_md->text().toInt();
@@ -145,19 +157,59 @@ void MainWindow::on_modifier_ep_clicked()
     QString email = ui->nv_ep_email->text();
     QString secteur = ui->nv_ep_sec->text();
 
-    Entreprise entreprise;
-
-    if (entreprise.modifierEntreprise(id, newId, nom, adresse, telephone, email,secteur)) {
-        QMessageBox::information(this, "Succès", "L'entreprise a été modifiée avec succès.");
-        // refraiche le tableau pour affiche du nouveau
-        ui->tab_entreprise->setModel(entreprise.afficher());
+    // Validation de l'ID
+    if (id <= 0) {
+        QMessageBox::warning(this, "Erreur de saisie", "L'ID actuel de l'entreprise est invalide.");
+        return;
     }
 
-    else {
+    // Validation du nouvel ID
+    if (newId <= 0) {
+        QMessageBox::warning(this, "Erreur de saisie", "Le nouvel ID de l'entreprise est invalide.");
+        return;
+    }
+
+    // Validation du nom
+    if (nom.isEmpty()) {
+        QMessageBox::warning(this, "Erreur de saisie", "Le nom de l'entreprise est obligatoire.");
+        return;
+    }
+
+    // Validation de l'adresse
+    if (adresse.isEmpty()) {
+        QMessageBox::warning(this, "Erreur de saisie", "L'adresse de l'entreprise est obligatoire.");
+        return;
+    }
+
+    // Validation du téléphone
+    if (telephone.isEmpty() || !telephone.contains(QRegularExpression("^[0-9]+$"))) {
+        QMessageBox::warning(this, "Erreur de saisie", "Veuillez entrer un numéro de téléphone valide (seulement des chiffres).");
+        return;
+    }
+
+    // Validation de l'email
+    QRegularExpression emailRegex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+    if (email.isEmpty() || !emailRegex.match(email).hasMatch()) {
+        QMessageBox::warning(this, "Erreur de saisie", "Veuillez entrer une adresse email valide.");
+        return;
+    }
+
+    // Validation du secteur
+    if (secteur.isEmpty()) {
+        QMessageBox::warning(this, "Erreur de saisie", "Le secteur de l'entreprise est obligatoire.");
+        return;
+    }
+
+    // Si toutes les validations passent, on modifie l'entreprise
+    Entreprise entreprise;
+    if (entreprise.modifierEntreprise(id, newId, nom, adresse, telephone, email, secteur)) {
+        QMessageBox::information(this, "Succès", "L'entreprise a été modifiée avec succès.");
+        // Rafraîchit le tableau pour afficher les données mises à jour
+        ui->tab_entreprise->setModel(entreprise.afficher());
+    } else {
         QMessageBox::warning(this, "Erreur", "Impossible de modifier l'entreprise. Vérifiez l'ID.");
     }
 }
-
 
 void MainWindow::on_tabWidget_3_tabBarClicked(int index)
 {
@@ -261,6 +313,7 @@ void MainWindow::on_pb_email_clicked()
 
 
 // -------- AJOUTER OFFRE ---------------
+// Ajouter offre
 void MainWindow::on_pb_of_clicked()
 {
     // Récupérer les valeurs des champs UI
@@ -270,12 +323,42 @@ void MainWindow::on_pb_of_clicked()
     QDate date_limit = ui->d_l->date();
     int entreprise_id = ui->id_ep_of->text().toInt();
 
+    // Validation de l'ID de l'offre
+    if (offre_id <= 0) {
+        QMessageBox::warning(this, "Erreur de saisie", "L'ID de l'offre doit être un entier positif.");
+        return;
+    }
+
+    // Validation du titre
+    if (titre.isEmpty()) {
+        QMessageBox::warning(this, "Erreur de saisie", "Le titre de l'offre est obligatoire.");
+        return;
+    }
+
+    // Validation de la description
+    if (description.isEmpty()) {
+        QMessageBox::warning(this, "Erreur de saisie", "La description de l'offre est obligatoire.");
+        return;
+    }
+
+    // Validation de la date limite
+    if (date_limit <= QDate::currentDate()) {
+        QMessageBox::warning(this, "Erreur de saisie", "La date limite doit être une date future.");
+        return;
+    }
+
+    // Validation de l'ID de l'entreprise
+    if (entreprise_id <= 0) {
+        QMessageBox::warning(this, "Erreur de saisie", "L'ID de l'entreprise doit être un entier positif.");
+        return;
+    }
+
     // Vérifier si la date de publication est fournie ou non
     QDate date_publication;
     if (!ui->date_pub->date().isNull()) {
         date_publication = ui->date_pub->date();
     } else {
-        date_publication = QDate::currentDate();  // Utiliser la date actuelle
+        date_publication = QDate::currentDate();  // Utiliser la date actuelle si non spécifiée
     }
 
     // Créer un objet Offre et l'ajouter à la base de données
@@ -285,9 +368,8 @@ void MainWindow::on_pb_of_clicked()
     // Vérifier le succès de l'ajout
     if (success) {
         QMessageBox::information(this, "Succès", "Offre d'emploi ajoutée avec succès.");
-        // refraiche tableau offre
+        // rafraîchir le tableau des offres
         ui->tab_of->setModel(o.afficher());
-
     } else {
         QMessageBox::warning(this, "Erreur", "Erreur lors de l'ajout de l'offre d'emploi.");
     }
@@ -316,7 +398,6 @@ void MainWindow::on_pb_sup_of_clicked()
 }
 
 // ------- modifer offre
-
 void MainWindow::on_pb_of_md_clicked()
 {
     // Récupérer les valeurs des champs UI
@@ -328,7 +409,49 @@ void MainWindow::on_pb_of_md_clicked()
     QDate date_publication = ui->date_pub_2->date();
     int entreprise_id = ui->id_ep_of_2->text().toInt();
 
-    // Créer un objet Offre et le modifier dans la base de données
+    // Vérification de l'ID actuel de l'offre
+    if (id_of <= 0) {
+        QMessageBox::warning(this, "Erreur de saisie", "L'ID actuel de l'offre doit être un entier positif.");
+        return;
+    }
+
+    // Validation du nouveau ID de l'offre
+    if (nouveau_id <= 0) {
+        QMessageBox::warning(this, "Erreur de saisie", "Le nouveau ID de l'offre doit être un entier positif.");
+        return;
+    }
+
+    // Validation du titre
+    if (titre.isEmpty()) {
+        QMessageBox::warning(this, "Erreur de saisie", "Le titre de l'offre est obligatoire.");
+        return;
+    }
+
+    // Validation de la description
+    if (description.isEmpty()) {
+        QMessageBox::warning(this, "Erreur de saisie", "La description de l'offre est obligatoire.");
+        return;
+    }
+
+    // Validation de la date limite
+    if (date_limite <= QDate::currentDate()) {
+        QMessageBox::warning(this, "Erreur de saisie", "La date limite doit être une date future.");
+        return;
+    }
+
+    // Validation de la date de publication
+    if (date_publication > QDate::currentDate()) {
+        QMessageBox::warning(this, "Erreur de saisie", "La date de publication ne peut pas être dans le futur.");
+        return;
+    }
+
+    // Validation de l'ID de l'entreprise
+    if (entreprise_id <= 0) {
+        QMessageBox::warning(this, "Erreur de saisie", "L'ID de l'entreprise doit être un entier positif.");
+        return;
+    }
+
+    // Créer un objet Offre et modifier dans la base de données
     Offre offre(nouveau_id, titre, description, date_publication, date_limite, entreprise_id);
     bool success = offre.modifier(id_of);
 
@@ -343,8 +466,7 @@ void MainWindow::on_pb_of_md_clicked()
     }
     msgBox.exec();
 }
-
-// -------------- Tri Offre
+// -------------- Tri Offre ---------------------------
 
 void MainWindow::on_Tri_of_clicked()
 {
